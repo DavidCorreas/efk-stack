@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  asentify-trace:
+    image: macervera/asentify-trace:master_150
+    restart: unless-stopped
+    ports:
+      - 8086:8080
+    logging:
+      driver: "fluentd"
+      options:
+        fluentd-address: "localhost:24224"
+        tag: asentify.master

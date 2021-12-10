@@ -1,18 +1,18 @@
 version: "3"
 services:
-  asentify-trace:
-    image: macervera/asentify-trace:master_133
-    ports:
-      - "8080:8080"
-    links:
-      - fluentd
-    depends_on:
-      - fluentd
-    logging:
-      driver: "fluentd"
-      options:
-        fluentd-address: "localhost:24224"
-        tag: httpd.access
+#  asentify-trace:
+#    image: macervera/asentify-trace:master_133
+#    ports:
+#      - "8085:8080"
+#    links:
+#      - fluentd
+#    depends_on:
+#      - fluentd
+#    logging:
+#      driver: "fluentd"
+#      options:
+#        fluentd-address: "localhost:24224"
+#        tag: httpd.access
 
   fluentd:
     build: ./fluentd
@@ -32,10 +32,17 @@ services:
     container_name: elasticsearch
     environment:
       - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+         soft: -1
+         hard: -1
     expose:
       - "9200"
     ports:
       - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data:rw
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.13.1
@@ -43,3 +50,7 @@ services:
       - "elasticsearch"
     ports:
       - "5601:5601"
+
+volumes:
+  esdata:
+    driver: local
