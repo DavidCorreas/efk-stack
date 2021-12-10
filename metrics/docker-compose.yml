@@ -1,0 +1,32 @@
+version: '3'
+services:
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.13.1
+    container_name: elasticsearch
+    environment:
+      - "discovery.type=single-node"
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+         soft: -1
+         hard: -1
+    expose:
+      - "9200"
+    ports:
+      - "9200:9200"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data:rw
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.13.1
+    ports:
+      - 5601:5601
+  apm:
+    image: docker.elastic.co/apm/apm-server:7.13.1
+    container_name: apm_example
+    ports:
+     - 8200:8200
+
+volumes:
+  esdata:
+    driver: local
